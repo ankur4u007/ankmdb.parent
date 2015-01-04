@@ -57,7 +57,7 @@
   	</build>
       <profiles>
 		<profile>
-			<!-- When built in OpenShift the 'openshift' profile will be used when 
+			<!-- When built in OpenShifts the 'openshift' profile will be used when 
 				invoking mvn. -->
 			<!-- Use this profile for any OpenShift specific customization your app 
 				will need. -->
