@@ -1,0 +1,95 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.URL;
+import java.util.List;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import mdb.bo.EntryBO;
+import mdb.bo.MediaBO;
+import mdb.bo.MovieBO;
+import mdb.processors.IMediaProcessor;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Main {
+
+	@SuppressWarnings("unchecked")
+	public static void main(final String[] args) throws IOException {
+		// TODO Auto-generated method stub
+
+		final ApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
+		final IMediaProcessor mp = (IMediaProcessor) ctx.getBean("sp-mediaProcessor");
+		final List<MediaBO> mediaBOList = mp.findMedia(null, null, null);
+		List<EntryBO> entryBOList = mp.updateMediaDetails(mediaBOList);
+		if (entryBOList != null) {
+			for (final EntryBO bo : entryBOList) {
+				if (bo.getMediaBo() instanceof MovieBO) {
+					final MovieBO movieBO = (MovieBO) bo.getMediaBo();
+					System.out.println(movieBO);
+					System.out.println("ReferenceName :" + bo.getReferenceName());
+					System.out.println("rating :" + bo.getRating());
+					System.out.println("ImageUrl :" + bo.getImageUrl());
+					System.out.println("ReferenceURL :" + bo.getReferenceUrl());
+					System.out.println();
+					final ImageIcon image = null;
+					try {
+						final URL url = new URL(bo.getImageUrl());
+						// image = new ImageIcon(ImageIO.read(url));
+					} catch (final IOException e) {
+						e.printStackTrace();
+					}
+					bo.setImage(image);
+				}
+			}
+		}
+		// Let's serialize an Object
+		try {
+			final FileOutputStream fileOut = new FileOutputStream("H:\\work\\tmp\\entrybolist");
+			final ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(entryBOList);
+			out.close();
+			fileOut.close();
+			System.out.println("\nSerialization Successful... Checkout your specified output file..\n");
+
+		} catch (final FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			final FileInputStream fileIn = new FileInputStream("H:\\work\\tmp\\entrybolist");
+			final ObjectInputStream in = new ObjectInputStream(fileIn);
+			entryBOList = (List<EntryBO>) in.readObject();
+			System.out.println("Deserialized Data: \n");
+			in.close();
+			fileIn.close();
+		} catch (final FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (final IOException e) {
+			e.printStackTrace();
+		} catch (final ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (entryBOList != null) {
+			for (final EntryBO bo : entryBOList) {
+				if (bo.getImage() != null) {
+					final JFrame frame = new JFrame();
+					frame.setSize(300, 300);
+					final JLabel label = new JLabel(bo.getImage());
+					frame.add(label);
+					frame.setVisible(true);
+				}
+			}
+		}
+	}
+
+}
