@@ -40,16 +40,6 @@
 	</properties>
 	<build>
     <sourceDirectory>src</sourceDirectory>
-    <plugins>
- 	<plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
-        </configuration> 
-     	</plugin>
-     	</plugins>
   		<resources>
 	  		<resource>
 			 	<directory>src\main\java</directory>
@@ -76,6 +66,7 @@
 			<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
 			<id>openshift</id>
 			<build>
+				<finalName>ankmdb</finalName>
 				<plugins>
 				 	<plugin>
 				        <artifactId>maven-compiler-plugin</artifactId>

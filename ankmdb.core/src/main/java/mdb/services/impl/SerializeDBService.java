@@ -12,12 +12,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mdb.bo.EntryBO;
-import mdb.services.IFileProviderService;
 import mdb.services.ISerializeDBService;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,24 +23,26 @@ import org.springframework.stereotype.Component;
 @Component("sp-serializeDBService")
 public class SerializeDBService implements ISerializeDBService {
 
+	@Value("${index.location}")
+	private String dbLocation;
 	@Value("${db.name}")
 	private String dbName;
-
-	@Autowired
-	@Qualifier(value = "sp-fileProviderService")
-	private IFileProviderService fileProviderService;
 
 	@Override
 	@Cacheable(value = "db.map", key = "#root.methodName")
 	public synchronized Set<EntryBO> getListFromDBFile() throws IOException {
 		Set<EntryBO> entryBOSet = null;
-		final File dbFile = fileProviderService.getFile(dbName);
+		final File dbFile = new File(dbLocation + dbName);
 		if (dbFile.exists()) {
-			try (final BufferedInputStream bis = new BufferedInputStream(new FileInputStream(dbFile))) {
+			BufferedInputStream bis = null;
+			try {
 				entryBOSet = new HashSet<EntryBO>();
+				bis = new BufferedInputStream(new FileInputStream(dbFile));
 				entryBOSet = SerializationUtils.deserialize(bis);
 			} catch (final FileNotFoundException e) {
 				throw e;
+			} finally {
+				bis.close();
 			}
 		}
 		return entryBOSet;
@@ -53,12 +52,16 @@ public class SerializeDBService implements ISerializeDBService {
 	@CacheEvict(value = "db.map", allEntries = true)
 	public synchronized void saveListToDBFile(final Set<EntryBO> entryBOSet) throws IOException {
 		if (entryBOSet != null) {
-			final File dbFile = fileProviderService.getFile(dbName);
-			try (final BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dbFile))) {
+			final File dbFile = new File(dbLocation + dbName);
+			BufferedOutputStream bos = null;
+			try {
+				bos = new BufferedOutputStream(new FileOutputStream(dbFile));
 				SerializationUtils.serialize((Serializable) entryBOSet, bos);
 				bos.flush();
 			} catch (final FileNotFoundException e) {
 				throw e;
+			} finally {
+				bos.close();
 			}
 
 		}
@@ -67,7 +70,7 @@ public class SerializeDBService implements ISerializeDBService {
 	@Override
 	@CacheEvict(value = "db.map", allEntries = true, condition = "#result == false", beforeInvocation = false)
 	public boolean checkSerFileExists() {
-		final File dbFile = fileProviderService.getFile(dbName);
-		return dbFile.exists();
+		final File file = new File(dbLocation + dbName);
+		return file.exists();
 	}
 }

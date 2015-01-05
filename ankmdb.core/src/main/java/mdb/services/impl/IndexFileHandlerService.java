@@ -14,11 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import mdb.services.IFileProviderService;
 import mdb.services.IIndexFileHandlerService;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,18 +26,17 @@ import com.google.common.base.Preconditions;
 @Component("sp-indexFileHandlerService")
 public class IndexFileHandlerService implements IIndexFileHandlerService {
 
+	@Value("${index.location}")
+	private String indexLocation;
 	@Value("${index.name}")
 	private String indexname;
-
-	@Autowired
-	@Qualifier(value = "sp-fileProviderService")
-	private IFileProviderService fileProviderService;
 
 	@Override
 	@Cacheable(value = "index.map", key = "#root.methodName")
 	public synchronized Map<String, List<String>> getSha1SourceMapFromFile() {
+		Preconditions.checkNotNull(indexLocation, "indexLocation have to be set in property config");
 		Preconditions.checkNotNull(indexname, "indexname have to be set in property config");
-		final File file = fileProviderService.getFile(indexname);
+		final File file = new File(indexLocation + indexname);
 		final Map<String, List<String>> indexMap = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
 		if (file.exists()) {
 			try (final BufferedReader bf = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
@@ -79,8 +75,9 @@ public class IndexFileHandlerService implements IIndexFileHandlerService {
 	@CacheEvict(value = "index.map", allEntries = true)
 	public synchronized void saveMaptoIndexFile(final Map<String, List<String>> indexMap) {
 		if (indexMap.size() > 0) {
+			Preconditions.checkNotNull(indexLocation, "indexLocation have to be set in property config");
 			Preconditions.checkNotNull(indexname, "indexname have to be set in property config");
-			final File file = fileProviderService.getFile(indexname);
+			final File file = new File(indexLocation + indexname);
 			try (final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
 				final StringBuilder sb = new StringBuilder();
 				for (final String key : indexMap.keySet()) {
@@ -95,7 +92,6 @@ public class IndexFileHandlerService implements IIndexFileHandlerService {
 					}
 					bw.append("").append("\r\n");
 				}
-				bw.flush();
 			} catch (final FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -109,7 +105,7 @@ public class IndexFileHandlerService implements IIndexFileHandlerService {
 	@Override
 	@CacheEvict(value = "index.map", allEntries = true, condition = "#result == false", beforeInvocation = false)
 	public boolean checkFileExists() {
-		final File file = fileProviderService.getFile(indexname);
+		final File file = new File(indexLocation + indexname);
 		return file.exists();
 	}
 }

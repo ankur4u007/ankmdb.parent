@@ -12,6 +12,6 @@
     
    <import resource="classpath:spring-core.xml"/>
    <context:component-scan base-package="ankmdb.client.service.*"></context:component-scan>
-   <util:properties id="sp-clientPropertiesBean"  location="classpath:ankmdb.client.properties"/>
+   <util:properties id="sp-clientPropertiesBean"  location="file:ankmdb.client.properties"/>
    
 </beans>

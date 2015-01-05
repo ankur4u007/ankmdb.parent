@@ -29,11 +29,7 @@ public class AnkMDBController {
 	private IIndexService indexService;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String init(final ModelMap model) {
-		final String postUrl = indexService.getPostUrl();
-		if (postUrl != null) {
-			model.addAttribute("url", postUrl);
-		}
+	public String init() {
 		return "load";
 	}
 

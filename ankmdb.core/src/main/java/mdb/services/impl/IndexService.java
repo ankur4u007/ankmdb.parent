@@ -18,7 +18,6 @@ import mdb.services.ISerializeDBService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Predicate;
@@ -39,15 +38,6 @@ public class IndexService implements IIndexService {
 	@Autowired
 	@Qualifier(value = "sp-serializeDBService")
 	private ISerializeDBService serializeDBService;
-
-	@Value("#{'server'.equals('${env.machine}')}")
-	private boolean isServerEnv;
-
-	@Value("${server.url}")
-	private String serverlUrl;
-
-	@Value("${local.url}")
-	private String localUrl;
 
 	@Override
 	public List<String> getSha1ListBySource(final String source) {
@@ -151,17 +141,6 @@ public class IndexService implements IIndexService {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	@Override
-	public String getPostUrl() {
-		String postUrl = null;
-		if (isServerEnv) {
-			postUrl = serverlUrl;
-		} else {
-			postUrl = localUrl;
-		}
-		return postUrl;
 	}
 
 }

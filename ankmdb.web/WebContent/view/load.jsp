@@ -1,16 +1,16 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!doctype html>
 <html ng-app="App" >
 <head>
-<link href="resources/bootstrap.min.css" rel="stylesheet">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
   <script src="resources/angular-1.0.2.js"></script>
   <script src="resources/app.js"></script>
-  <script src="resources/bootstrap.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 </head>
 <body ng-controller="mediaController">
-<input type="hidden" ng-init='postUrl="<c:out value="${url}"/>"' ng-model="postUrl" />
-<table class="table table-striped table-hover" > 
+
+<table class="table table-striped table-hover">
   <thead>
-  	<tr> 
+  	<tr>
   		<th></th>
   		<th>FileName</th>
   		<th>Source</th>
