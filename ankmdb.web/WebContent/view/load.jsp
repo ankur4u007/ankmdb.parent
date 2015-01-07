@@ -20,7 +20,7 @@
   </thead>
   <tbody>
   <tr ng-repeat="entityBo in meidaResults">
-    	<td><img ng-src="{{ entityBo.imageUrl || serverUrlResource+'image404.1.jpg' }}" style="width: 30px; height: 30px"/></td>   
+    	<td><img src="{{ entityBo.imageUrl || serverUrlResource+'image404.1.jpg' }}" style="width: 30px; height: 30px"/></td>   
     	<td width="40%"> <div ng-repeat="mediaBo in entityBo">{{ mediaBo.name }}</div></td>
     	<td> <div ng-repeat="mediaBo in entityBo">{{ mediaBo.sourceMachine }}</div></td>
     	<td> <a href="{{ entityBo.referenceUrl }}">{{ entityBo.referenceName }}</a></td> 
