@@ -85,9 +85,11 @@ public class MediaProcessor implements IMediaProcessor {
 						}
 						mediaName = sb.toString().trim();
 					}
-					mediaBOList.add(MediaBOBuilder.buildBoFromDetails(mediaName, new Date(attrs.lastModifiedTime().toMillis()), attrs.size(), file
-							.getParent().toAbsolutePath().toString(),
-							serachNameGenerator.getSearchableNames(mediaName, format, mediaFormatLists, filterTextList), format, mediaSource));
+					if (mediaFormatLists.contains(format)) {
+						mediaBOList.add(MediaBOBuilder.buildBoFromDetails(mediaName, new Date(attrs.lastModifiedTime().toMillis()), attrs.size(),
+								file.getParent().toAbsolutePath().toString(),
+								serachNameGenerator.getSearchableNames(mediaName, format, mediaFormatLists, filterTextList), format, mediaSource));
+					}
 					return super.visitFile(file, attrs);
 				}
 			});
@@ -128,13 +130,13 @@ public class MediaProcessor implements IMediaProcessor {
 					entryBOList.add(EntryBOBuilder.buildBoFromList(
 							MoviesBOBuilder.buildMoviesBO(mediaBO, responseMap.get(IMediaDetailsUpdater.cast) == null ? null
 									: (List<String>) responseMap.get(IMediaDetailsUpdater.cast), releaseDate),
-									responseMap.get(IMediaDetailsUpdater.rating) == null ? null : new Double((String) responseMap
-											.get(IMediaDetailsUpdater.rating)),
-											responseMap.get(IMediaDetailsUpdater.referenceUrl) == null ? null : (String) responseMap
-													.get(IMediaDetailsUpdater.referenceUrl),
-													responseMap.get(IMediaDetailsUpdater.imageUrl) == null ? null : (String) responseMap.get(IMediaDetailsUpdater.imageUrl),
-															responseMap.get(IMediaDetailsUpdater.referenceName) == null ? null : (String) responseMap
-																	.get(IMediaDetailsUpdater.referenceName), mediaHash));
+							responseMap.get(IMediaDetailsUpdater.rating) == null ? null : new Double((String) responseMap
+									.get(IMediaDetailsUpdater.rating)),
+							responseMap.get(IMediaDetailsUpdater.referenceUrl) == null ? null : (String) responseMap
+									.get(IMediaDetailsUpdater.referenceUrl),
+							responseMap.get(IMediaDetailsUpdater.imageUrl) == null ? null : (String) responseMap.get(IMediaDetailsUpdater.imageUrl),
+							responseMap.get(IMediaDetailsUpdater.referenceName) == null ? null : (String) responseMap
+									.get(IMediaDetailsUpdater.referenceName), mediaHash));
 				}
 			}
 		}
