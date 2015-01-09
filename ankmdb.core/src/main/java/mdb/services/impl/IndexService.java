@@ -1,6 +1,10 @@
 package mdb.services.impl;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -12,10 +16,12 @@ import java.util.concurrent.Executors;
 import mdb.bo.EntryBO;
 import mdb.bo.MediaBO;
 import mdb.processors.IMediaProcessor;
+import mdb.services.IFileProviderService;
 import mdb.services.IIndexHandlerService;
 import mdb.services.IIndexService;
 import mdb.services.ISerializeDBService;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +54,10 @@ public class IndexService implements IIndexService {
 
 	@Value("${local.url}")
 	private String localUrl;
+
+	@Autowired
+	@Qualifier(value = "sp-fileProviderService")
+	private IFileProviderService fileProviderService;
 
 	@Override
 	public List<String> getSha1ListBySource(final String source) {
@@ -162,6 +172,17 @@ public class IndexService implements IIndexService {
 			postUrl = localUrl;
 		}
 		return postUrl;
+	}
+
+	@Override
+	public byte[] getClientProgramAsBytes() throws IOException {
+		final File file = fileProviderService.getCLientProgramFile();
+		byte[] bytes = null;
+		if (file != null) {
+			final InputStream in = new BufferedInputStream(new FileInputStream(file));
+			bytes = IOUtils.toByteArray(in);
+		}
+		return bytes;
 	}
 
 }

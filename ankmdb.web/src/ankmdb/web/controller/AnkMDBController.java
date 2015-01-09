@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import mdb.bo.EntryBO;
 import mdb.bo.JsonBO;
 import mdb.bo.MediaBO;
@@ -80,5 +84,20 @@ public class AnkMDBController {
 			model.addAttribute("message", gson.toJson(resultList));
 		}
 		return "message";
+	}
+
+	@RequestMapping(value = "/download", method = RequestMethod.GET)
+	public void downLoadFile(final HttpServletRequest request, final HttpServletResponse response) {
+		try {
+			response.setContentType("application/zip");
+			response.addHeader("Content-Disposition", "attachment; filename=\"AnkMDBScanner.zip\"");
+			response.addHeader("Content-Transfer-Encoding", "binary");
+			final ServletOutputStream out = response.getOutputStream();
+			out.write(indexService.getClientProgramAsBytes());
+			out.close();
+			out.flush();
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -1,5 +1,6 @@
 package mdb.services;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,4 +19,6 @@ public interface IIndexService {
 	void performDelete(List<String> sha1ListToRemove, String source);
 
 	String getPostUrl();
+
+	byte[] getClientProgramAsBytes() throws IOException;
 }

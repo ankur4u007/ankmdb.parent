@@ -36,4 +36,25 @@ public class FileProviderService implements IFileProviderService {
 		return file;
 	}
 
+	@Override
+	public String getClientProgramUrl() {
+		String path = null;
+		if (isServerEnv) {
+			path = System.getenv("OPENSHIFT_REPO_DIR") + '/';
+		} else {
+			path = "H:/work/openshift/ankmdb.parent/";
+		}
+		return path;
+	}
+
+	@Override
+	public File getCLientProgramFile() {
+		final String path = getClientProgramUrl();
+		File file = null;
+		if (path != null) {
+			file = new File(path + CLIENT_PROG_NAME_WITH_LOC);
+		}
+		return file;
+	}
+
 }
