@@ -1,9 +1,5 @@
 package mdb.updater.imdb;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -52,38 +48,20 @@ public class ImdbUpdater extends MediaDetailsUpdater {
 			if (elemPagecontent != null) {
 				final Element header = elemPagecontent.select("span").first();
 				if (header != null) {
-					try {
-						final Element elemMain = responseDoc.getElementById("main");
-						if (elemMain != null) {
-							final Element tdElem = fetchElementBasedOnTagsAndAttributes(elemMain, "td", "class", "primary_photo", null, true);
-							String referenceUrl = null;
-							if (tdElem != null) {
-								responseMap = new HashMap<String, Object>();
-								final File file = new File("H:\\work\\tmp\\" + header.text().replace("\"", "") + ".txt");
-								final FileWriter fw = new FileWriter(file.getAbsoluteFile());
-								final BufferedWriter bw = new BufferedWriter(fw);
-								final Element refUrlElem = tdElem.child(0);
-								if (refUrlElem != null) {
-									referenceUrl = refUrlElem.attr("href");
-								}
-								if (referenceUrl != null) {
-									updateMapWithDetails(baseUrl + referenceUrl, responseMap);
-									bw.write("Name : " + responseMap.get(IMediaDetailsUpdater.referenceName) + "\r\n");
-									bw.write("imgurl : " + responseMap.get(IMediaDetailsUpdater.imageUrl) + "\r\n");
-									bw.write("refernceUrl : " + responseMap.get(IMediaDetailsUpdater.referenceUrl) + "\r\n");
-									bw.write("releaseDate : " + responseMap.get(IMediaDetailsUpdater.releaseDate) + "\r\n");
-									bw.write("rating : " + responseMap.get(IMediaDetailsUpdater.rating) + "\r\n");
-									bw.write("casts : " + responseMap.get(IMediaDetailsUpdater.cast) + "\r\n");
-								}
-								bw.close();
+					final Element elemMain = responseDoc.getElementById("main");
+					if (elemMain != null) {
+						final Element tdElem = fetchElementBasedOnTagsAndAttributes(elemMain, "td", "class", "primary_photo", null, true);
+						String referenceUrl = null;
+						if (tdElem != null) {
+							responseMap = new HashMap<String, Object>();
+							final Element refUrlElem = tdElem.child(0);
+							if (refUrlElem != null) {
+								referenceUrl = refUrlElem.attr("href");
+							}
+							if (referenceUrl != null) {
+								updateMapWithDetails(baseUrl + referenceUrl, responseMap);
 							}
 						}
-					} catch (final FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (final IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
 				}
 			}
