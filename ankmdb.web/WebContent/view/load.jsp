@@ -4,7 +4,6 @@
 <link href="resources/bootstrap.min.css" rel="stylesheet">
   <script src="resources/angular.min.js"></script>
   <script src="resources/app.js"></script>
-  <script src="resources/bootstrap.min.js"></script>
   <script src="resources/refKill.js"></script>
 </head>
 <body ng-controller="mediaController"> 
