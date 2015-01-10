@@ -52,8 +52,12 @@ public class IndexHandlerService implements IIndexHandlerService {
 				indexMap = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
 			}
 			if (!indexMap.isEmpty()) {
-				final List<String> existingSha1List = indexMap.get(source);
-				existingSha1List.addAll(sha1IdList);
+				List<String> existingSha1List = indexMap.get(source);
+				if (existingSha1List != null) {
+					existingSha1List.addAll(sha1IdList);
+				} else {
+					existingSha1List = sha1IdList;
+				}
 				indexMap.put(source, existingSha1List);
 			} else {
 				indexMap.put(source, sha1IdList);
