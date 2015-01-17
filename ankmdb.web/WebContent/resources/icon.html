@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<script type="text/javascript">
+function loadImage(){
+	//alert("hi");
+	var windowUrl = window.frameElement.getAttribute("Name");
+	var img = document.getElementById("iconHolder");
+	var imgUrl = windowUrl.split("#####");
+	if(imgUrl[0]!="" && imgUrl[0]!=undefined){
+		img.src = imgUrl[0];
+	}
+}
+</script>
+</head>
+<body onload="loadImage()">
+<div id="imdbImgIconId"><img id="iconHolder" src="image404.1.jpg"
+witdh="40px" height="60px" ></div>
+</body>
+</html>

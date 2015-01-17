@@ -33,8 +33,11 @@ public class AnkMDBController {
 	private IIndexService indexService;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String init(final ModelMap model) {
+	public String init(final ModelMap model, final HttpServletResponse response) {
 		final String postUrl = indexService.getPostUrl();
+		response.addHeader("Access-Control-Allow-Origin", "http://localhost:8080/ankmdb.web/getAllMedia");
+		response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+		response.setHeader("Access-Control-Allow-Headers", "Content-Type");
 		if (postUrl != null) {
 			model.addAttribute("url", postUrl);
 		}
