@@ -2,16 +2,24 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
+<script src="refKill.js"></script>
 <script type="text/javascript">
 function loadImage(){
 	//alert("hi");
 	var windowUrl = window.frameElement.getAttribute("Name");
-	var img = document.getElementById("iconHolder");
+	var imgDiv = document.getElementById("imdbImgIconId");
 	var imgUrl = windowUrl.split("#####");
 	if(imgUrl[0]!="" && imgUrl[0]!=undefined){
-		img.src = imgUrl[0];
+		imgDiv.innerHTML = removeReferer(imgUrl[0]);
 	}
 }
+function removeReferer(imageUrl){
+	var imgProp={};
+	imgProp.style= ";width:50px; height:60px;";
+		if(imageUrl!="" && imageUrl!=undefined){
+			return ReferrerKiller.imageHtml(imageUrl,imgProp);
+		}
+	};	
 </script>
 </head>
 <body onload="loadImage()">
